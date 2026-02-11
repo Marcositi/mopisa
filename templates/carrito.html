@@ -1,0 +1,121 @@
+{% extends "base.html" %}
+{% block title %}Mi Carrito - MOPISA{% endblock %}
+
+{% block content %}
+<div class="carrito-wrapper">
+    <h2 class="carrito-title">🛒 Mi Carrito</h2>
+
+    <div class="carrito-container">
+        <div class="table-responsive">
+            <table class="carrito-table">
+                <thead>
+                    <tr>
+                        <th>Producto</th>
+                        <th>Cantidad</th>
+                        <th>Precio</th>
+                        <th>Subtotal</th>
+                        <th style="text-align: center;">Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in productos %}
+                    <tr>
+                        <td class="td-nombre" data-label="Producto">{{ item.producto.nombre }}</td>
+                        <td data-label="Cantidad">
+                            <span class="badge-cantidad">{{ item.cantidad }}</span>
+                        </td>
+                        <td data-label="Precio">${{ item.producto.precio }}</td>
+                        <td class="td-subtotal" data-label="Subtotal">${{ item.subtotal }}</td>
+                        <td class="td-acciones" data-label="Acciones">
+                            <form method="post" action="{% url 'eliminar_del_carrito' item.producto.id %}" style="display:inline;">
+                                {% csrf_token %}
+                                <button type="submit" class="btn-eliminar" title="Eliminar artículo" onclick="return confirm('¿Estás seguro de que deseas eliminar este producto?')">
+                                    <i class="fas fa-trash-alt"></i> Eliminar
+                                </button>
+                            </form>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="5" class="carrito-vacio">
+                            <i class="fas fa-shopping-basket"></i>
+                            <p>Tu carrito está vacío actualmente.</p>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        {% if productos %}
+        <div class="carrito-total">
+            <span>Total a pagar:</span>
+            <strong>${{ total }}</strong>
+        </div>
+        {% endif %}
+
+        <div class="carrito-actions">
+            <a href="{% url 'cotizador' %}" class="btn-secundario">
+                <i class="fas fa-arrow-left"></i> <span class="btn-text">Seguir cotizando</span>
+            </a>
+            
+            {% if productos %}
+            <form method="post" action="{% url 'cotizador' %}" class="form-generar">
+                {% csrf_token %}
+                <button type="submit" name="generar" value="1" class="btn-primario">
+                    <i class="fas fa-file-invoice-dollar"></i> <span class="btn-text">Generar Cotización</span>
+                </button>
+            </form>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<style>
+    /* ... Estilos base mantenidos y optimizados ... */
+    .carrito-wrapper { padding: 20px 10px; animation: fadeIn 0.5s ease-in-out; }
+    .carrito-title { text-align: center; color: #33271b; margin-bottom: 25px; font-weight: bold; }
+    .carrito-container { max-width: 900px; margin: 0 auto; background: #fff; padding: 25px; border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.05); }
+
+    .carrito-table { width: 100%; border-collapse: collapse; }
+    .carrito-table th { background: #33271b; color: rgb(224, 136, 68); padding: 15px; text-align: left; font-size: 0.85em; text-transform: uppercase; }
+    .carrito-table td { padding: 15px; border-bottom: 1px solid #eee; color: #555; vertical-align: middle; }
+
+    .td-nombre { font-weight: bold; color: #33271b; }
+    .td-subtotal { font-weight: bold; color: rgb(224, 136, 68); }
+    .badge-cantidad { background: #f4f4f4; padding: 5px 12px; border-radius: 15px; font-weight: bold; }
+
+    .btn-eliminar { background: #e74c3c; color: white; border: none; padding: 8px 15px; border-radius: 6px; cursor: pointer; transition: 0.3s; display: inline-flex; align-items: center; gap: 8px; }
+    .btn-eliminar:hover { background: #c0392b; }
+
+    .carrito-total { text-align: right; font-size: 1.3em; padding: 20px 0; color: #33271b; border-top: 2px solid #f4f4f4; }
+    .carrito-total strong { color: rgb(224, 136, 68); margin-left: 10px; }
+
+    .carrito-actions { display: flex; justify-content: space-between; gap: 15px; margin-top: 20px; }
+    .form-generar { display: contents; } /* Mantiene alineación de botones */
+
+    .btn-primario, .btn-secundario { padding: 12px 20px; border-radius: 8px; font-weight: bold; text-decoration: none; display: flex; align-items: center; justify-content: center; gap: 10px; transition: 0.3s; border: none; cursor: pointer; flex: 1; }
+    .btn-primario { background: rgb(224, 136, 68); color: #fff; }
+    .btn-secundario { background: #f4f4f4; color: #33271b; }
+
+    /* 📱 OPTIMIZACIÓN MÓVIL (TABLA A CARDS) */
+    @media (max-width: 768px) {
+        .carrito-container { padding: 15px; }
+        .carrito-table thead { display: none; } /* Ocultar cabeceras */
+        
+        .carrito-table tr { display: block; border: 1px solid #eee; border-radius: 10px; margin-bottom: 15px; padding: 10px; box-shadow: 0 2px 5px rgba(0,0,0,0.02); }
+        .carrito-table td { display: flex; justify-content: space-between; align-items: center; text-align: right; border-bottom: 1px solid #f9f9f9; padding: 10px 5px; }
+        .carrito-table td:last-child { border-bottom: none; }
+        
+        /* Insertar etiquetas de los campos */
+        .carrito-table td::before { content: attr(data-label); font-weight: bold; color: #888; text-transform: uppercase; font-size: 0.75em; }
+        
+        .carrito-actions { flex-direction: column-reverse; } /* El botón de generar queda arriba */
+        .btn-text { font-size: 0.9em; }
+        .btn-eliminar { width: 100%; justify-content: center; }
+        .td-nombre { color: rgb(224, 136, 68); font-size: 1.1em; }
+    }
+
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+</style>
+{% endblock %}

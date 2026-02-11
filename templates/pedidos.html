@@ -1,0 +1,182 @@
+{% extends "base.html" %}
+{% block title %}Mis Pedidos | MOPISA{% endblock %}
+
+{% block content %}
+<div class="pedidos-container">
+    <div class="header-pedidos">
+        <h2>📦 Mis Pedidos y Cotizaciones</h2>
+        <p>Gestiona tus órdenes confirmadas desde aquí</p>
+    </div>
+
+    {% if pedidos %}
+        <div class="tabla-wrapper">
+            <table class="pedidos-tabla">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Fecha</th>
+                        <th>Estado</th>
+                        <th>Total</th>
+                        <th class="text-right">Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for pedido in pedidos %}
+                    <tr>
+                        <td class="id-cell">#{{ pedido.id }}</td>
+                        <td class="fecha-cell">{{ pedido.fecha|date:"d/m/y" }} <small>{{ pedido.fecha|date:"H:i" }}</small></td>
+                        <td>
+                            <span class="badge-status {{ pedido.estado|lower }}">
+                                {{ pedido.estado|upper }}
+                            </span>
+                        </td>
+                        <td class="total-cell">${{ pedido.total }}</td>
+                        <td class="text-right">
+                            <div class="actions-group">
+                                <a href="{% url 'detalle_pedido' pedido.id %}" class="action-btn view" title="Ver Detalle">
+                                    <i class="fas fa-eye"></i>
+                                </a>
+                                <form method="post" action="{% url 'eliminar_pedido' pedido.id %}" style="display:inline;">
+                                    {% csrf_token %}
+                                    <button type="submit" class="action-btn delete" onclick="return confirm('¿Cancelar pedido?');">
+                                        <i class="fas fa-trash-alt"></i>
+                                    </button>
+                                </form>
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% else %}
+        <div class="no-pedidos">
+            <i class="fas fa-scroll"></i>
+            <p>Aún no tienes pedidos registrados.</p>
+            <a href="{% url 'cotizaciones_cliente' %}" class="btn-link">Ver mis cotizaciones</a>
+        </div>
+    {% endif %}
+</div>
+
+<style>
+    :root {
+        --mopisa-brown: #33271b;
+        --mopisa-orange: #e08844;
+        --light-bg: #fdfdfd;
+    }
+
+    .pedidos-container {
+        max-width: 1100px;
+        margin: 2rem auto;
+        padding: 0 1rem;
+    }
+
+    .header-pedidos {
+        text-align: center;
+        margin-bottom: 2rem;
+    }
+
+    .header-pedidos h2 {
+        color: var(--mopisa-brown);
+        font-weight: 700;
+        margin-bottom: 5px;
+    }
+
+    .header-pedidos p {
+        color: #777;
+        font-size: 0.9rem;
+    }
+
+    /* Contenedor con Scroll Suave para Móvil */
+    .tabla-wrapper {
+        background: #fff;
+        border-radius: 12px;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+        overflow-x: auto; /* Permite scroll si la pantalla es muy chica */
+        -webkit-overflow-scrolling: touch;
+    }
+
+    .pedidos-tabla {
+        width: 100%;
+        border-collapse: collapse;
+        min-width: 600px; /* Evita que se amontone en pantallas pequeñas */
+    }
+
+    .pedidos-tabla th {
+        background: var(--light-bg);
+        color: var(--mopisa-brown);
+        padding: 18px 15px;
+        text-align: left;
+        font-size: 0.8rem;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        border-bottom: 2px solid #eee;
+    }
+
+    .pedidos-tabla td {
+        padding: 15px;
+        border-bottom: 1px solid #f1f1f1;
+        color: #444;
+        font-size: 0.95rem;
+    }
+
+    .id-cell { font-weight: 700; color: var(--mopisa-brown); }
+    .fecha-cell small { color: #999; display: block; font-size: 0.75rem; }
+    .total-cell { font-weight: 700; color: #2d3436; }
+    .text-right { text-align: right !important; }
+
+    /* Badges Minimalistas */
+    .badge-status {
+        padding: 4px 10px;
+        border-radius: 4px;
+        font-size: 0.7rem;
+        font-weight: 700;
+        letter-spacing: 0.5px;
+    }
+    .badge-status.pendiente { background: #fff3cd; color: #856404; }
+    .badge-status.procesado { background: #d1ecf1; color: #0c5460; }
+    .badge-status.completado { background: #d4edda; color: #155724; }
+
+    /* Botones de acción circulares */
+    .actions-group {
+        display: flex;
+        gap: 8px;
+        justify-content: flex-end;
+    }
+
+    .action-btn {
+        width: 35px;
+        height: 35px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 50%;
+        transition: 0.2s;
+        text-decoration: none;
+        border: none;
+        cursor: pointer;
+    }
+
+    .action-btn.view { background: #f8f9fa; color: var(--mopisa-orange); border: 1px solid #eee; }
+    .action-btn.view:hover { background: var(--mopisa-orange); color: #fff; }
+
+    .action-btn.delete { background: #fff5f5; color: #fa5252; }
+    .action-btn.delete:hover { background: #fa5252; color: #fff; }
+
+    .no-pedidos {
+        text-align: center;
+        padding: 50px;
+        background: #fff;
+        border-radius: 12px;
+    }
+
+    .no-pedidos i { font-size: 3rem; color: #eee; margin-bottom: 1rem; }
+
+    /* 📱 Ajustes Finales para Móvil */
+    @media (max-width: 600px) {
+        .pedidos-container { margin: 1rem auto; }
+        .pedidos-tabla th, .pedidos-tabla td { padding: 12px 10px; }
+        .header-pedidos h2 { font-size: 1.4rem; }
+    }
+</style>
+{% endblock %}

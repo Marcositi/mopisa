@@ -1,0 +1,219 @@
+{% extends "base.html" %}
+{% block title %}Registro Cliente{% endblock %}
+
+{% block content %}
+<div class="registro-wrapper">
+    <div class="registro-formulario">
+        <h2>Bienvenido a MOPISA</h2>
+        <p class="subtitulo">Crea una cuenta y obtén beneficios</p>
+
+        <form method="post" class="cliente-form">
+            {% csrf_token %}
+
+            <div class="form-group">
+                <label for="nombre">Nombre:</label>
+                <input type="text" id="nombre" name="nombre" required>
+            </div>
+
+            <div class="form-group">
+                <label for="correo">Correo:</label>
+                <input type="email" id="correo" name="correo" required>
+            </div>
+
+            <div class="form-group">
+                <label for="telefono">Teléfono:</label>
+                <input type="text" id="telefono" name="telefono">
+            </div>
+
+            <div class="form-group">
+                <label for="direccion">Dirección:</label>
+                <textarea id="direccion" name="direccion"></textarea>
+            </div>
+
+            <div class="form-group">
+                <label for="estado">Estado:</label>
+                <input type="text" id="estado" name="estado">
+            </div>
+
+            <div class="form-group">
+                <label for="ciudad">Ciudad:</label>
+                <input type="text" id="ciudad" name="ciudad">
+            </div>
+
+            <div class="form-group">
+                <label for="codigo_postal">Código Postal:</label>
+                <input type="text" id="codigo_postal" name="codigo_postal" maxlength="10">
+            </div>
+
+            <div class="form-group">
+                <label for="rfc">RFC:</label>
+                <input type="text" id="rfc" name="rfc" maxlength="13" required>
+            </div>
+
+            <div class="form-group">
+                <label for="username">Usuario:</label>
+                <input type="text" id="username" name="username" required>
+            </div>
+
+            <div class="form-group">
+                <label for="password">Contraseña:</label>
+                <input type="password" id="password" name="password" required>               
+            </div>
+
+            <div class="form-group checkbox">
+                <label>
+                    <input type="checkbox" name="promociones"> Deseo recibir ofertas y promociones
+                </label>
+            </div>
+
+            <div class="form-group terms">
+                <p>Al registrarte aceptas nuestros <a href="#">Términos y condiciones</a> y <a href="#">Aviso de privacidad</a>.</p>
+            </div>
+
+            <div class="form-group recaptcha">
+                <label><input type="checkbox" required> No soy un robot</label>
+                <div class="recaptcha-fake">reCAPTCHA | Privacidad - Condiciones</div>
+            </div>
+
+            <div class="form-actions">
+                <button type="submit" class="btn btn-primary">Registrar</button>
+            </div>
+        </form>
+
+        <div class="login-link">
+            ¿Ya tienes cuenta? <a href="{% url 'login' %}">Iniciar sesión</a>
+        </div>
+    </div>
+
+    <div class="registro-imagen">
+        <div class="promo-text">
+            <h3>Elige, Compra y Construye</h3>
+            <p>Todo lo que necesitas para tu obra</p>
+        </div>
+    </div>
+</div>
+
+<style>
+    .registro-wrapper {
+        display: flex;
+        flex-wrap: wrap;
+        min-height: 100vh;
+        background: #ecf0f1;
+    }
+
+    .registro-formulario {
+        flex: 1;
+        padding: 40px;
+        background: #fff;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    }
+
+    .registro-imagen {
+        flex: 1;
+        background: url('/static/images/fachada.jpeg') center center / cover no-repeat;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #fff;
+        text-align: center;
+        padding: 20px;
+    }
+
+    .promo-text h3 {
+        font-size: 28px;
+        margin-bottom: 10px;
+    }
+
+    .promo-text p {
+        font-size: 18px;
+    }
+
+    .subtitulo {
+        font-size: 16px;
+        color: #7f8c8d;
+        margin-bottom: 20px;
+    }
+
+    .cliente-form .form-group {
+        margin-bottom: 15px;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .cliente-form label {
+        font-weight: bold;
+        margin-bottom: 5px;
+        color: #34495e;
+    }
+
+    .cliente-form input,
+    .cliente-form textarea {
+        padding: 10px;
+        border: 1px solid #d95555;
+        border-radius: 6px;
+        font-size: 14px;
+    }
+
+    .validacion {
+        font-size: 12px;
+        color: #e74c3c;
+        margin-top: 5px;
+    }
+
+    .checkbox label {
+        font-weight: normal;
+    }
+
+    .terms p {
+        font-size: 13px;
+        color: #7f8c8d;
+    }
+
+    .recaptcha {
+        margin-top: 10px;
+    }
+
+    .recaptcha-fake {
+        background: #f1f1f1;
+        padding: 10px;
+        font-size: 12px;
+        color: #7f8c8d;
+        border-radius: 4px;
+        margin-top: 5px;
+    }
+
+    .form-actions {
+        text-align: center;
+        margin-top: 20px;
+    }
+
+    .btn-primary {
+        background: #3498db;
+        color: #fff;
+        padding: 10px 20px;
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+        font-size: 15px;
+    }
+
+    .btn-primary:hover {
+        background: #2980b9;
+    }
+
+    .login-link {
+        text-align: center;
+        margin-top: 20px;
+        font-size: 14px;
+    }
+
+    .login-link a {
+        color: #3498db;
+        text-decoration: none;
+    }
+
+    .login-link a:hover {
+        text-decoration: underline;
+    }
+</style>
+{% endblock %}

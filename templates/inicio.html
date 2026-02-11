@@ -1,0 +1,189 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}MOPISA | Inicio{% endblock %}
+
+{% block content %}
+    <div class="hero-section" style="background-image: url('{% static 'images/construccion.jpg' %}');">
+        <div class="overlay">
+            <p>"Puro Power para transformar ideas en obras que inspiran"</p>
+        </div>
+    </div>
+
+    <div class="promo-ticker">
+        <div class="ticker-content">
+            {% for promo in promociones %}
+                <span>🔥 {{ promo.texto|upper }} 🔥</span>
+            {% empty %}
+                <span>BIENVENIDO A MOPISA - MATERIALES PARA CONSTRUCCIÓN</span>
+            {% endfor %}
+            {% for promo in promociones %}
+                <span>🔥 {{ promo.texto|upper }} 🔥</span>
+            {% endfor %}
+        </div>
+    </div>
+
+    <section class="categories">
+        <h3>Nuestras Categorías</h3>
+        <div class="category-grid">
+            <a href="{% url 'productos' %}?categoria=PINTURA" class="category-card">
+                <img src="{% static 'images/pintura.jpg' %}" alt="Pintura">
+                <p>Pintura</p>
+            </a>
+            <a href="{% url 'productos' %}?categoria=ACABADOS" class="category-card">
+                <img src="{% static 'images/acabados.jpg' %}" alt="Acabados">
+                <p>Acabados</p>
+            </a>
+            <a href="{% url 'productos' %}?categoria=Aceros" class="category-card">
+                <img src="{% static 'images/aceros.jpg' %}" alt="Aceros">
+                <p>Aceros</p>
+            </a>
+            <a href="{% url 'productos' %}?categoria=ELECTRICOS" class="category-card">
+                <img src="{% static 'images/electrico.jpg' %}" alt="Eléctrico">
+                <p>Eléctrico</p>
+            </a>
+            <a href="{% url 'productos' %}?categoria=CONEXIONES DE GAS" class="category-card">
+                <img src="{% static 'images/gas.jpg' %}" alt="Gas">
+                <p>Gas</p>
+            </a>
+            <a href="{% url 'productos' %}?categoria=FERRETERIA" class="category-card">
+                <img src="{% static 'images/ferreteria.jpg' %}" alt="Ferretería">
+                <p>Ferretería</p>
+            </a>
+            <a href="{% url 'productos' %}?categoria=ALBAÑILERIA" class="category-card">
+                <img src="{% static 'images/herramientas.jpg' %}" alt="Albañilería">
+                <p>Albañilería</p>
+            </a>
+            <a href="{% url 'productos' %}?categoria=ALMACEN" class="category-card">
+                <img src="{% static 'images/materiales.jpg' %}" alt="Construcción">
+                <p>Construcción</p>
+            </a>
+            <a href="{% url 'productos' %}?categoria=PLOMERIA" class="category-card">
+                <img src="{% static 'images/plomeria.jpg' %}" alt="Plomería">
+                <p>Plomería</p>
+            </a>
+            <a href="{% url 'productos' %}?categoria=CERRAJERIA" class="category-card">
+                <img src="{% static 'images/cerrajeria.jpg' %}" alt="Cerrajería">
+                <p>Cerrajería</p>
+            </a>
+        </div>
+    </section>
+
+    <style>
+        /* --- Hero --- */
+        .hero-section {
+            position: relative;
+            margin-top: 15px;
+            background-size: cover;
+            background-position: center;
+            border-radius: 12px;
+            min-height: 380px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+        }
+
+        .hero-section .overlay {
+            background-color: rgba(0, 0, 0, 0.55);
+            padding: 30px;
+            text-align: center;
+            width: 85%;
+            max-width: 800px;
+            border-radius: 15px;
+            backdrop-filter: blur(2px);
+        }
+
+        .hero-section h2 {
+            font-size: 3.2em;
+            color: #e08844;
+            margin: 0;
+            text-transform: uppercase;
+            font-weight: 800;
+        }
+
+        .hero-section p {
+            font-size: 1.3em;
+            color: #fff;
+            margin-top: 10px;
+            font-style: italic;
+        }
+
+        /* --- Promo Ticker --- */
+        .promo-ticker {
+            background: #e08844;
+            color: white;
+            white-space: nowrap;
+            overflow: hidden;
+            padding: 12px 0;
+            margin: 20px 0;
+            font-weight: bold;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .ticker-content {
+            display: inline-block;
+            animation: slideTicker 35s linear infinite;
+        }
+
+        .ticker-content span {
+            padding: 0 50px;
+            font-size: 1.1em;
+        }
+
+        @keyframes slideTicker {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-50%); }
+        }
+
+        /* --- Categorías Mini --- */
+        .categories { margin: 40px auto; text-align: center; }
+        .categories h3 { font-size: 1.8em; margin-bottom: 25px; color: #333; text-transform: uppercase; }
+
+        .category-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); 
+            gap: 15px;
+            padding: 0 20px;
+        }
+
+        .category-card {
+            background: #fff;
+            border-radius: 10px;
+            padding: 10px;
+            text-decoration: none;
+            color: #333;
+            box-shadow: 0 3px 8px rgba(0,0,0,0.08);
+            transition: transform 0.3s ease, background 0.3s ease;
+        }
+
+        .category-card img {
+            width: 100%;
+            height: 100px;
+            object-fit: cover;
+            border-radius: 6px;
+            margin-bottom: 8px;
+        }
+
+        .category-card p {
+            font-size: 0.85em;
+            font-weight: 700;
+            margin: 5px 0;
+            text-transform: uppercase;
+        }
+
+        .category-card:hover {
+            transform: translateY(-5px);
+            background: #33271b;
+            color: #e08844;
+        }
+
+        /* --- Responsivo --- */
+        @media (max-width: 768px) {
+            .hero-section { min-height: 250px; }
+            .hero-section h2 { font-size: 2em; }
+            .category-grid { grid-template-columns: repeat(2, 1fr); }
+        }
+    </style>
+{% endblock %}

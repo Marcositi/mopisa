@@ -1,0 +1,170 @@
+{% extends "base.html" %}
+{% block title %}Mis Cotizaciones - MOPISA{% endblock %}
+
+{% block content %}
+<div class="cotizaciones-wrapper">
+    <h2 class="titulo-cotizaciones">📑 Mis Cotizaciones</h2>
+
+    {% if cotizaciones %}
+        <div class="table-responsive">
+            <table class="tabla-cotizaciones">
+                <thead>
+                    <tr>
+                        <th>Folio</th>
+                        <th>Fecha</th>
+                        <th>Total</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for cotizacion in cotizaciones %}
+                    <tr>
+                        <td><strong>#{{ cotizacion.id }}</strong></td>
+                        <td>{{ cotizacion.fecha|date:"d/m/Y H:i" }}</td>
+                        <td class="txt-naranja">${{ cotizacion.total }}</td>
+                        <td class="acciones">
+                            {# Botón Convertir a Pedido #}
+                            <form action="{% url 'convertir_a_pedido' cotizacion.id %}" method="post" style="display:inline;">
+                                {% csrf_token %}
+                                <button type="submit" class="btn btn-confirmar" title="Confirmar Pedido"
+                                    onclick="return confirm('¿Deseas convertir esta cotización en un pedido real?');">
+                                    <i class="fas fa-check-circle"></i> Pedir
+                                </button>
+                            </form>
+
+                            {# Botón Ver Detalle #}
+                            <a href="{% url 'detalle_cotizacion' cotizacion.id %}" class="btn btn-ver" title="Ver Detalle">
+                                <i class="fas fa-eye"></i>
+                            </a>
+
+                            {# Botón Eliminar #}
+                            <form action="{% url 'eliminar_cotizacion' cotizacion.id %}" method="post" style="display:inline;">
+                                {% csrf_token %}
+                                <button type="submit" class="btn btn-eliminar" title="Eliminar"
+                                    onclick="return confirm('¿Estás seguro de eliminar esta cotización?');">
+                                    <i class="fas fa-trash-alt"></i>
+                                </button>
+                            </form>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% else %}
+        <div class="sin-cotizaciones-card">
+            <i class="fas fa-file-invoice" style="font-size: 3em; color: #ccc; margin-bottom: 15px;"></i>
+            <p>No tienes cotizaciones registradas actualmente.</p>
+        </div>
+    {% endif %}
+
+    <div class="contenedor-regresar" style="margin-top: 20px; text-align: center;">
+        <a href="{% url 'cotizador' %}" class="btn btn-regresar">
+            <i class="fas fa-plus"></i> Nueva Cotización
+        </a>
+    </div>
+</div>
+
+<style>
+    /* Tu CSS se mantiene igual, es muy limpio */
+    .cotizaciones-wrapper {
+        padding: 20px 0;
+        max-width: 1000px;
+        margin: 0 auto;
+    }  
+
+    .btn-confirmar { 
+        background: #2ecc71; 
+        color: white; 
+        cursor: pointer; 
+    }
+
+    .btn-confirmar:hover { 
+        background: #27ae60; 
+    }
+
+    .titulo-cotizaciones {
+        text-align: center;
+        margin-bottom: 30px;
+        color: #33271b;
+        font-weight: bold;
+    }
+
+    .table-responsive {
+        background: #fff;
+        border-radius: 12px;
+        box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+        overflow: hidden;
+    }
+
+    .tabla-cotizaciones {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    .tabla-cotizaciones th {
+        background: #33271b;
+        color: rgb(224, 136, 68);
+        padding: 15px;
+        text-transform: uppercase;
+        font-size: 0.85em;
+    }
+
+    .tabla-cotizaciones td {
+        padding: 15px;
+        text-align: center;
+        border-bottom: 1px solid #eee;
+        vertical-align: middle;
+    }
+
+    .txt-naranja {
+        color: rgb(224, 136, 68);
+        font-weight: bold;
+    }
+
+    .acciones {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .btn {
+        padding: 8px 14px;
+        border-radius: 6px;
+        text-decoration: none;
+        font-size: 0.9em;
+        font-weight: bold;
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        transition: 0.3s;
+        border: none;
+    }
+
+    .btn-ver { background: #f4f4f4; color: #33271b; }
+    .btn-ver:hover { background: #e0e0e0; }
+
+    .btn-eliminar { background: #ffeded; color: #e74c3c; cursor: pointer; }
+    .btn-eliminar:hover { background: #e74c3c; color: white; }
+
+    .btn-regresar {
+        background: #33271b;
+        color: white;
+        padding: 12px 25px;
+    }
+
+    .sin-cotizaciones-card {
+        text-align: center;
+        padding: 60px;
+        background: white;
+        border-radius: 12px;
+        color: #888;
+    }
+
+    @media (max-width: 600px) {
+        .acciones { flex-direction: column; }
+        .btn { width: 100%; justify-content: center; }
+    }
+</style>
+{% endblock %}

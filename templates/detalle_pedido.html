@@ -1,0 +1,104 @@
+{% extends "base.html" %}
+{% block title %}Detalle del Pedido{% endblock %}
+
+{% block content %}
+<style>
+    /* Estilos del contenedor */
+    .pedido-container {
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 20px;
+        background-color: #fdfdfd;
+        border: 1px solid #ddd;
+        border-radius: 10px;
+        font-family: Arial, sans-serif;
+    }
+
+    /* Ajuste para que el texto no se desborde en móvil */
+    .pedido-header h2 { margin-bottom: 5px; word-break: break-all; }
+    
+    .table-responsive { width: 100%; overflow-x: auto; }
+
+    table.pedido-tabla {
+        width: 100%;
+        border-collapse: collapse;
+        margin-bottom: 20px;
+        min-width: 500px; /* Asegura que no se amontone */
+    }
+
+    table.pedido-tabla th, table.pedido-tabla td {
+        border-bottom: 1px solid #ccc;
+        padding: 10px;
+        text-align: left;
+    }
+
+    .btn-pagar {
+        display: block;
+        width: 100%;
+        max-width: 250px;
+        margin: 20px auto 0 auto;
+        padding: 12px;
+        background-color: #28a745;
+        color: white;
+        text-align: center;
+        font-weight: bold;
+        text-decoration: none;
+        border-radius: 5px;
+    }
+
+    .admin-badge {
+        background: #6c757d;
+        color: white;
+        padding: 10px;
+        border-radius: 5px;
+        text-align: center;
+        margin-top: 20px;
+    }
+</style>
+
+<div class="pedido-container">
+    <div class="pedido-header">
+        <h2>Detalle del Pedido</h2>
+        <p><strong>Cliente:</strong> {{ pedido.cliente.nombre|default:pedido.cliente }}</p>
+    </div>
+
+    <div class="table-responsive">
+        <table class="pedido-tabla">
+            <thead>
+                <tr>
+                    <th>Artículo</th>
+                    <th>Código</th>
+                    <th>Precio</th>
+                    <th>Cant.</th>
+                    <th>Monto</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in pedido.items.all %}
+                <tr>
+                    <td>{{ item.producto.nombre|default:item.producto.descripcion }}</td>
+                    <td>{{ item.producto.clave }}</td>
+                    <td>${{ item.precio_unitario }}</td>
+                    <td>{{ item.cantidad }}</td>
+                    <td>${{ item.subtotal }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <div class="pedido-resumen">
+        <p><strong>Total: ${{ pedido.total }}</strong></p>
+    </div>
+
+    <p class="pedido-id">ID: {{ pedido.id }} ({{ pedido.items.count }} Artículos)</p>
+
+    {% if not user.is_staff %}
+        <a href="{% url 'confirmar_pedido' pedido.id %}" class="btn-pagar">Confirmar pedido</a>
+    {% else %}
+        <div class="admin-badge">
+            <i class="fas fa-lock"></i> Modo Administración: Confirmación deshabilitada
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

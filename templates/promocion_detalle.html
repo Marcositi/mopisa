@@ -1,0 +1,195 @@
+{% extends "base.html" %}
+
+{% block title %}{{ promocion.titulo }} | MOPISA{% endblock %}
+
+{% block content %}
+<div class="container-detalle">
+    <div class="detalle-card-horizontal">
+        <div class="detalle-image">
+            {% if promocion.imagen %}
+                <img src="{{ promocion.imagen.url }}" alt="{{ promocion.titulo }}">
+            {% else %}
+                <div class="no-image-placeholder">MOPISA</div>
+            {% endif %}
+            <div class="badge-descuento">-{{ promocion.descuento }}%</div>
+        </div>
+
+        <div class="detalle-content">
+            <nav class="breadcrumb">
+                <a href="{% url 'inicio' %}">Inicio</a> / 
+                <a href="{% url 'promociones' %}">Promociones</a>
+            </nav>
+            
+            <h2>{{ promocion.titulo }}</h2>
+            
+            <div class="info-group">
+                <label>Descripción del beneficio:</label>
+                <p>{{ promocion.descripcion }}</p>
+            </div>
+
+            <div class="info-row">
+                <div class="info-item">
+                    <span class="icon">📅</span>
+                    <div>
+                        <label>Vigencia</label>
+                        <p>{{ promocion.vigente_hasta|date:"d M, Y" }}</p>
+                    </div>
+                </div>
+                <div class="info-item">
+                    <span class="icon">🏷️</span>
+                    <div>
+                        <label>Ahorro</label>
+                        <p>{{ promocion.descuento }}% de descuento</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="detalle-actions">
+                <a href="{% url 'productos' %}" class="btn-primary">Ver productos relacionados</a>
+                <a href="{% url 'promociones' %}" class="btn-secondary">Volver al listado</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .container-detalle {
+        max-width: 1000px;
+        margin: 40px auto;
+        padding: 0 20px;
+    }
+
+    .detalle-card-horizontal {
+        display: flex;
+        background: #fff;
+        border-radius: 15px;
+        overflow: hidden;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        border: 1px solid #eee;
+    }
+
+    /* Imagen */
+    .detalle-image {
+        flex: 1;
+        min-height: 400px;
+        position: relative;
+        background: #f8f8f8;
+    }
+
+    .detalle-image img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    .badge-descuento {
+        position: absolute;
+        top: 20px;
+        left: 20px;
+        background: #e08844;
+        color: white;
+        padding: 8px 15px;
+        border-radius: 50px;
+        font-weight: bold;
+        font-size: 1.2em;
+        box-shadow: 0 4px 10px rgba(224, 136, 68, 0.4);
+    }
+
+    /* Contenido */
+    .detalle-content {
+        flex: 1.2;
+        padding: 40px;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .breadcrumb {
+        font-size: 0.85em;
+        color: #888;
+        margin-bottom: 15px;
+    }
+
+    .breadcrumb a { color: #e08844; text-decoration: none; }
+
+    .detalle-content h2 {
+        font-size: 2.2em;
+        color: #33271b;
+        margin-bottom: 20px;
+        line-height: 1.2;
+    }
+
+    .info-group { margin-bottom: 25px; }
+    .info-group label {
+        display: block;
+        font-weight: bold;
+        color: #888;
+        text-transform: uppercase;
+        font-size: 0.75em;
+        margin-bottom: 5px;
+    }
+
+    .info-group p { font-size: 1.1em; color: #444; line-height: 1.6; }
+
+    .info-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 20px;
+        margin-bottom: 30px;
+        padding: 20px 0;
+        border-top: 1px solid #eee;
+        border-bottom: 1px solid #eee;
+    }
+
+    .info-item { display: flex; align-items: center; gap: 12px; }
+    .info-item .icon { font-size: 1.5em; }
+    .info-item label { font-size: 0.7em; color: #999; display: block; }
+    .info-item p { font-weight: bold; color: #333; margin: 0; }
+
+    /* Botones */
+    .detalle-actions { display: flex; flex-direction: column; gap: 12px; }
+    
+    .btn-primary {
+        background: #33271b;
+        color: white;
+        text-align: center;
+        padding: 15px;
+        border-radius: 8px;
+        text-decoration: none;
+        font-weight: bold;
+        transition: 0.3s;
+    }
+
+    .btn-primary:hover { background: #e08844; }
+
+    .btn-secondary {
+        color: #666;
+        text-align: center;
+        padding: 10px;
+        text-decoration: underline;
+        font-size: 0.9em;
+    }
+
+    /* 📱 RESPONSIVO PARA MÓVIL */
+    @media (max-width: 768px) {
+        .detalle-card-horizontal {
+            flex-direction: column; /* Apila imagen arriba y texto abajo */
+        }
+
+        .detalle-image {
+            min-height: 250px;
+        }
+
+        .detalle-content {
+            padding: 25px;
+        }
+
+        .detalle-content h2 {
+            font-size: 1.7em;
+        }
+
+        .info-row {
+            grid-template-columns: 1fr; /* Una columna para datos en móvil */
+        }
+    }
+</style>
+{% endblock %}

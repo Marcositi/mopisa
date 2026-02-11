@@ -1,0 +1,210 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Cotización #{{ cotizacion.id }}</title>
+    <style>
+        body {
+            background: #fff;
+            font-family: "Times New Roman", Georgia, serif;
+            color: #000;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .cotizacion-print {
+            max-width: 800px;
+            margin: 0 auto;
+            position: relative;
+        }
+
+        /* Marca de agua */
+        .marca-agua {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 400px;
+            opacity: 0.1;
+            transform: translate(-50%, -50%);
+            z-index: -1;
+        }
+
+        /* Encabezado con logo */
+        .cotizacion-header {
+            text-align: center;
+            margin-bottom: 20px;
+            border-bottom: 1px solid #000;
+            padding-bottom: 10px;
+        }
+        .cotizacion-header img.logo {
+            max-height: 80px;
+            display: block;
+            margin: 0 auto 10px auto;
+        }
+        .cotizacion-header h2 {
+            font-size: 22px;
+            margin: 0;
+        }
+
+        /* Información general */
+        .cotizacion-info {
+            margin-bottom: 15px;
+            font-size: 12px; /* más pequeño */
+        }
+
+        .info-table {
+            width: 70%; /* más estrecha */
+            border-collapse: collapse;
+            margin: 0 auto; /* centrada */
+            font-size: 12px; /* más pequeña */
+        }
+        .info-table th, .info-table td {
+            border: 1px solid #000;
+            padding: 4px; /* menos espacio */
+            text-align: left;
+        }
+        .info-table th {
+            background-color: #f2f2f2;
+            font-weight: bold;
+            width: 30%; /* más compacta */
+        }
+
+        /* Tabla de productos */
+        .table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+            font-size: 14px;
+        }
+        .table th, .table td {
+            border: 1px solid #000;
+            padding: 8px;
+            text-align: left;
+        }
+        .table th {
+            background-color: #f2f2f2;
+            font-weight: bold;
+        }
+
+        /* Nota */
+        .cotizacion-nota {
+            margin-top: 20px;
+            font-size: 12px;
+            font-style: italic;
+            color: #333;
+            text-align: center;
+        }
+
+        /* Footer y botones */
+        .cotizacion-footer {
+            text-align: center;
+            margin-top: 30px;
+        }
+        .btn-print {
+            display: inline-block;
+            padding: 8px 16px;
+            border: 1px solid #000;
+            background: #f2f2f2;
+            color: #000;
+            text-decoration: none;
+            font-size: 14px;
+            cursor: pointer;
+            margin: 0 5px;
+        }
+        .btn-print:hover {
+            background: #e0e0e0;
+        }
+
+        @media print {
+            .btn-print {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="cotizacion-print">
+        <!-- Marca de agua -->
+        <img src="{% static 'images/logo.png' %}" alt="Marca de agua" class="marca-agua">
+
+        <header class="cotizacion-header">
+            <!-- Logo de la empresa -->
+            <img src="{% static 'images/logo.png' %}" alt="Logo de la empresa" class="logo">
+            <h2>Cotización #{{ cotizacion.id }}</h2>
+        </header>
+
+        <!-- Datos del cliente en tabla más pequeña -->
+        <section class="cotizacion-info">
+            <table class="info-table">
+                <tr>
+                    <th>Cliente</th>
+                    <td>{{ cotizacion.cliente.nombre }}</td>
+                </tr>
+                <tr>
+                    <th>Dirección</th>
+                    <td>{{ cotizacion.cliente.direccion }}</td>
+                </tr>
+                <tr>
+                    <th>Estado</th>
+                    <td>{{ cotizacion.cliente.estado }}</td>
+                </tr>
+                <tr>
+                    <th>Ciudad</th>
+                    <td>{{ cotizacion.cliente.ciudad }}</td>
+                </tr>
+                <tr>
+                    <th>Código Postal</th>
+                    <td>{{ cotizacion.cliente.codigo_postal }}</td>
+                </tr>
+                <tr>
+                    <th>RFC</th>
+                    <td>{{ cotizacion.cliente.rfc }}</td>
+                </tr>
+                <tr>
+                    <th>Fecha</th>
+                    <td>{{ cotizacion.fecha }}</td>
+                </tr>
+            </table>
+        </section>
+
+        <!-- Productos -->
+        <section class="cotizacion-items">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Producto</th>
+                        <th>Cantidad</th>
+                        <th>Subtotal</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in cotizacion.items.all %}
+                    <tr>
+                        <td>{{ item.producto.nombre }}</td>
+                        <td>{{ item.cantidad }}</td>
+                        <td>${{ item.subtotal }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <th colspan="2" style="text-align:right;">Total:</th>
+                        <td><strong>${{ cotizacion.total }}</strong></td>
+                    </tr>
+                </tfoot>
+            </table>
+        </section>
+
+        <!-- Nota de vigencia -->
+        <div class="cotizacion-nota">
+            <p>Nota: Esta cotización tiene un tiempo de vigencia limitado y los precios pueden cambiar sin previo aviso.</p>
+        </div>
+
+        <footer class="cotizacion-footer">
+            <button onclick="window.print()" class="btn-print">🖨️ Imprimir</button>
+            <a href="{% url 'cotizaciones_cliente' %}" class="btn-print">← Regresar</a>
+        </footer>
+    </div>
+</body>
+</html>

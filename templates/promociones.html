@@ -1,0 +1,154 @@
+{% extends "base.html" %}
+
+{% block title %}Promociones | MOPISA{% endblock %}
+
+{% block content %}
+    <h2 class="section-title">Promociones Vigentes</h2>
+
+    <div class="card-container">
+        {% for promo in promociones %}
+            <div class="card">
+                <div class="image-wrapper">
+                    {% if promo.imagen %}
+                        <img src="{{ promo.imagen.url }}" alt="{{ promo.titulo }}">
+                    {% else %}
+                        <div class="no-image">MOPISA</div>
+                    {% endif %}
+                </div>
+                <div class="card-body">
+                    <h3>{{ promo.titulo }}</h3>
+                    <p class="descuento-tag">🔥 {{ promo.descuento }}% OFF</p>
+                    <a href="{% url 'promocion_detalle' promo.id %}" class="btn-promo">Ver Detalles</a>
+                </div>
+            </div>
+        {% empty %}
+            <p class="empty-msg">Por el momento no hay promociones disponibles. ¡Vuelve pronto!</p>
+        {% endfor %}
+    </div>
+
+    <style>
+        .section-title {
+            text-align: center;
+            margin: 30px 0;
+            color: #33271b;
+            text-transform: uppercase;
+            font-weight: 800;
+        }
+
+        /* Contenedor responsivo */
+        .card-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            justify-content: center;
+            padding: 0 15px;
+            max-width: 1200px;
+            margin: 0 auto 50px auto;
+        }
+
+        /* Estilo de la Tarjeta */
+        .card {
+            background: #fff;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            width: 100%; /* Default para móvil */
+            max-width: 300px; /* Tamaño máximo en escritorio */
+            transition: transform 0.3s ease;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+        }
+
+        /* Ajuste de Imagen */
+        .image-wrapper {
+            width: 100%;
+            height: 200px;
+            overflow: hidden;
+            background: #f4f4f4;
+        }
+
+        .image-wrapper img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .no-image {
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #33271b;
+            color: #e08844;
+            font-weight: bold;
+        }
+
+        /* Cuerpo de la tarjeta */
+        .card-body {
+            padding: 15px;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            flex-grow: 1;
+        }
+
+        .card-body h3 {
+            font-size: 1.2em;
+            margin-bottom: 10px;
+            color: #333;
+            height: 2.4em; /* Mantiene alineación si el título es largo */
+            overflow: hidden;
+        }
+
+        .descuento-tag {
+            color: #e08844;
+            font-weight: bold;
+            font-size: 1.3em;
+            margin-bottom: 15px;
+        }
+
+        .btn-promo {
+            background: #33271b;
+            color: #fff;
+            padding: 10px;
+            text-decoration: none;
+            border-radius: 6px;
+            font-weight: bold;
+            margin-top: auto;
+            transition: background 0.3s;
+        }
+
+        .btn-promo:hover {
+            background: #e08844;
+        }
+
+        .empty-msg {
+            text-align: center;
+            font-style: italic;
+            color: #666;
+        }
+
+        /* 📱 AJUSTES PARA PANTALLAS PEQUEÑAS (Móviles) */
+        @media (max-width: 600px) {
+            .card-container {
+                gap: 15px;
+            }
+
+            .card {
+                max-width: 100%; /* La tarjeta ocupa el ancho completo */
+            }
+
+            .section-title {
+                font-size: 1.5em;
+            }
+
+            .image-wrapper {
+                height: 180px;
+            }
+        }
+    </style>
+{% endblock %}

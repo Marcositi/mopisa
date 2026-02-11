@@ -1,0 +1,87 @@
+{% extends "base.html" %}
+{% block title %}Productos{% endblock %}
+
+{% block content %}
+    <h2>Buscar Productos</h2>
+
+    <form method="get" class="buscador-form">
+        <input type="text" name="q" placeholder="Buscar producto..." value="{{ query }}">
+
+        <select name="categoria">
+            <option value="">Todas las categorías</option>
+            {% for c in categorias %}
+                <option value="{{ c.nombre }}" {% if categoria == c.nombre %}selected{% endif %}>
+                    {{ c.nombre }}
+                </option>
+            {% endfor %}
+        </select>
+
+        <select name="marca">
+            <option value="">Todas las marcas</option>
+            {% for m in marcas %}
+                <option value="{{ m.nombre }}" {% if marca == m.nombre %}selected{% endif %}>
+                    {{ m.nombre }}
+                </option>
+            {% endfor %}
+        </select>
+
+        <select name="proveedor">
+            <option value="">Todos los proveedores</option>
+            {% for p in proveedores %}
+                <option value="{{ p.nombre }}" {% if proveedor == p.nombre %}selected{% endif %}>
+                    {{ p.nombre }}
+                </option>
+            {% endfor %}
+        </select>
+
+        <button type="submit">Buscar</button>
+    </form>
+
+    {% if query or marca or proveedor or categoria %}
+        <h3>Resultados</h3>
+        <div class="productos-grid">
+    {% for producto in page_obj %}
+        <a href="{% url 'producto_detalle' producto.id %}" class="producto-card">
+            
+            {% if producto.imagen %}
+                <img src="{{ producto.imagen.url }}" alt="{{ producto.nombre }}">
+            {% else %}
+                <img src="https://via.placeholder.com/180x120?text=Sin+Imagen" alt="Sin imagen">
+            {% endif %}
+            
+            <h4>{{ producto.nombre }}</h4>
+            <p>{{ producto.descripcion|truncatewords:10 }}</p>
+            <p><strong>${{ producto.precio }}</strong></p>
+        </a>
+    {% empty %}
+        <p>No se encontraron productos que coincidan con tu búsqueda.</p>
+    {% endfor %}
+</div>
+
+        <div class="pagination">
+            {% if page_obj.has_previous %}
+                <a href="?q={{ query }}&categoria={{ categoria }}&marca={{ marca }}&proveedor={{ proveedor }}&page={{ page_obj.previous_page_number }}">Anterior</a>
+            {% endif %}
+
+            <span>Página {{ page_obj.number }} de {{ page_obj.paginator.num_pages }}</span>
+
+            {% if page_obj.has_next %}
+                <a href="?q={{ query }}&categoria={{ categoria }}&marca={{ marca }}&proveedor={{ proveedor }}&page={{ page_obj.next_page_number }}">Siguiente</a>
+            {% endif %}
+        </div>
+    {% endif %}
+
+    <style>
+        /* (Mantenemos tus estilos originales) */
+        .buscador-form {margin: 20px 0; text-align: center;}
+        .buscador-form input, .buscador-form select {padding: 8px; margin: 5px; border-radius: 6px; border: 1px solid #ccc;}
+        .buscador-form button {padding: 8px 15px; border: none; background: rgb(224, 136, 68); color: #fff; border-radius: 6px; cursor: pointer;}
+        .buscador-form button:hover {background: #d97c3a;}
+        .productos-grid {display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 20px; padding: 20px;}
+        .producto-card {background: #f9f9f9; border-radius: 8px; padding: 10px; text-align: center; box-shadow: 0 3px 8px rgba(0,0,0,0.1); transition: transform 0.2s ease; font-size: 0.9em; text-decoration: none; color: inherit;}
+        .producto-card img {width: 100%; height: 120px; object-fit: cover; border-radius: 6px; margin-bottom: 8px;}
+        .producto-card:hover {transform: translateY(-4px); background: #eee;}
+        .pagination {text-align: center; margin-top: 20px;}
+        .pagination a {margin: 0 10px; text-decoration: none; color: rgb(224, 136, 68); font-weight: bold;}
+    </style>
+{% endblock %}

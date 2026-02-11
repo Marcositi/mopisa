@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}MOPISA | Sistema de Gestión{% endblock %}</title>
+    {% load static %}
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <style>
+        /* SECCIÓN 2: Estilos Base y Reseteo */
+        /* Nota: Se usa 'overflow-x: hidden' para evitar que el contenido "baile" hacia los lados en iPhone */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            background: #f4f4f4;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* SECCIÓN 3: Navegación (Navbar) */
+        /* Nota: 'box-sizing: border-box' asegura que el padding no ensanche el menú más allá del 100% de la pantalla */
+        nav {
+            background: #33271b;
+            position: fixed;
+            top: 0;
+            width: 100%;
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 15px;
+            z-index: 1000;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+            box-sizing: border-box;
+        }
+
+        nav ul {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        nav ul li a, nav ul li button {
+            color: rgb(224, 136, 68);
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 0.9em;
+            padding: 8px 10px;
+            transition: all 0.3s ease;
+            background: none;
+            border: none;
+            cursor: pointer;
+        }
+
+        /* SECCIÓN 4: Carrito y Badge */
+        /* Nota: El badge se posiciona de forma absoluta respecto al botón del carrito */
+        .cart-link {
+            position: relative;
+            background: #e1f152 !important;
+            color: #33271b !important;
+            font-weight: bold;
+            font-size: 0.85em;
+            padding: 6px 12px;
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            text-decoration: none;
+        }
+
+        .carrito-badge {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background: #f00909;
+            color: white;
+            font-size: 0.7em;
+            padding: 2px 6px;
+            border-radius: 50%;
+            border: 2px solid #33271b;
+        }
+
+        /* SECCIÓN 5: Header y Mensaje de Bienvenida */
+        /* Nota: Se usa Flexbox para centrar logo y nombre, y 'word-wrap' para que nombres largos no rompan el diseño */
+        header {
+            background: #33271b;
+            color: white;
+            padding: 15px 10px;
+            margin-top: 60px;
+            text-align: center;
+        }
+
+        .header-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .header-content img { height: 45px; width: auto; }
+
+        .header-content h2 { 
+            margin: 0; 
+            font-size: 1.1em; 
+            max-width: 100%;
+            word-wrap: break-word; 
+        }
+
+        /* SECCIÓN 6: Contenedor Principal (Cuerpo de la página) */
+        /* Nota: Este es el ajuste clave para iPhone. 'padding' y 'box-sizing' evitan el desbordamiento lateral */
+        main {
+            flex: 1;
+            padding: 15px;
+            max-width: 1200px;
+            margin: 0 auto;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        /* SECCIÓN 7: Alertas de Django */
+        /* Nota: Se añade 'word-break' para que mensajes largos (como confirmación de pedido) se ajusten al ancho móvil */
+        .alert { 
+            padding: 12px; 
+            border-radius: 8px; 
+            margin-bottom: 15px; 
+            text-align: center; 
+            font-weight: bold; 
+            font-size: 0.9em;
+            word-break: break-word;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .alert-success { background: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
+        .alert-error, .alert-danger { background: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
+
+        /* SECCIÓN 8: Media Queries (Ajustes para móviles) */
+        /* Nota: Aquí se define el comportamiento del menú hamburguesa y el apilado de elementos */
+        .menu-toggle { display: none; flex-direction: column; cursor: pointer; gap: 4px; }
+        .menu-toggle span { background: white; height: 3px; width: 25px; border-radius: 2px; }
+
+        @media (max-width: 992px) {
+            .menu-toggle { display: flex; }
+            nav ul {
+                display: none;
+                flex-direction: column;
+                position: absolute;
+                top: 60px;
+                left: 0;
+                background: #33271b;
+                width: 100%;
+                padding: 15px 0;
+            }
+            nav ul.show { display: flex; }
+            nav ul li { width: 100%; text-align: center; }
+        }
+
+        @media (min-width: 600px) {
+            .header-content { flex-direction: row; justify-content: center; }
+        }
+
+        /* Nota: Esta clase debe envolver a cualquier tabla en tus otros templates */
+        .table-responsive {
+            width: 100%;
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        footer { background: #33271b; color: white; text-align: center; padding: 20px; margin-top: auto; }
+    </style>
+</head>
+<body>
+
+    <nav>
+        <div class="menu-toggle" onclick="toggleMenu()">
+            <span></span><span></span><span></span>
+        </div>
+        
+        <ul id="menu">
+            <li><a href="{% url 'inicio' %}">Inicio</a></li>
+            <li><a href="{% url 'productos' %}">Productos</a></li>
+            <li><a href="{% url 'promociones' %}">Promociones</a></li>
+            <li><a href="{% url 'pedidos' %}">Pedidos</a></li>
+            {% if user.is_authenticated and user.is_staff %}
+                <li><a href="#" onclick="checkInventario()">Inventario</a></li>
+            {% endif %}
+            <li><a href="{% url 'cotizador' %}">Cotizador</a></li>
+            
+            {% if user.is_authenticated %}
+                <li>
+                    <form method="post" action="{% url 'logout' %}" id="logout-form" style="display: inline;">
+                        {% csrf_token %}
+                        <button type="button" onclick="confirmarLogout()">Logout</button>
+                    </form>
+                </li>
+            {% else %}
+                <li><a href="{% url 'login' %}">Login</a></li>
+            {% endif %}
+        </ul>
+
+        <div class="cart-container">
+            <a href="{% url 'carrito' %}" class="cart-link">
+                <i class="fas fa-shopping-cart"></i>
+                <span>Carrito</span>
+                {% if carrito_count > 0 %}
+                    <span class="carrito-badge">{{ carrito_count }}</span>
+                {% endif %}
+            </a>
+        </div>
+    </nav>
+
+    <header>
+        <div class="header-content">
+            <img src="{% static 'images/logo.png' %}" alt="Logo MOPISA">
+            {% if user.is_authenticated %}
+                <h2>Bienvenido, {{ user.get_full_name|default:user.username }} 👋</h2>
+            {% endif %}
+        </div>
+    </header>
+
+    <main>
+        {% if messages %}
+            <div class="messages">
+                {% for message in messages %}
+                    <div class="alert alert-{{ message.tags }}">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+
+        <div class="table-responsive">
+            {% block content %}
+            {% endblock %}
+        </div>
+    </main>
+
+    <footer>
+        <p>&copy; 2026 - MOPISA | Todos los derechos reservados</p>
+    </footer>
+
+    <script>
+        // Nota: Controla la apertura del menú en celulares
+        function toggleMenu() {
+            document.getElementById('menu').classList.toggle('show');
+        }
+
+        function checkInventario() {
+            window.location.href = "{% url 'inventario' %}";
+        }
+
+        // Nota: Alerta elegante para cerrar sesión en lugar del 'confirm' básico
+        function confirmarLogout() {
+            Swal.fire({
+                title: '¿Cerrar sesión?',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#33271b',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Sí, salir',
+                cancelButtonText: 'No, quedarme'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    document.getElementById('logout-form').submit();
+                }
+            });
+        }
+
+        // SECCIÓN 10: WebSocket para Notificaciones Staff
+        // Nota: Se usan comillas para convertir variables de Django a Strings de JS y evitar errores en el editor
+        const staffStatus = "{{ user.is_staff }}";
+        const authStatus = "{{ user.is_authenticated }}";
+
+        if (authStatus === "True" && staffStatus === "True") {
+            const notificationSocket = new WebSocket(
+                (window.location.protocol === 'https:' ? 'wss://' : 'ws://') + 
+                window.location.host + '/ws/notifications/'
+            );
+
+            notificationSocket.onmessage = function(e) {
+                const data = JSON.parse(e.data);
+                
+                // Nota: Reproduce sonido de caja registradora al recibir pedido
+                new Audio('https://assets.mixkit.co/active_storage/sfx/2013/2013-preview.mp3').play().catch(() => {});
+
+                Swal.fire({
+                    title: data.titulo || 'Nuevo Pedido',
+                    text: `${data.mensaje}. Total: $${data.total}`,
+                    icon: 'success',
+                    toast: true,
+                    position: 'top-end',
+                    showConfirmButton: true,
+                    confirmButtonText: 'Ver Pedido',
+                    timer: 10000,
+                    timerProgressBar: true
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        window.location.href = "{% url 'pedidos' %}";
+                    }
+                });
+            };
+        }
+    </script>
+</body>
+</html>
